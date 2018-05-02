@@ -18,8 +18,12 @@
   "homepage": "https://github.com/balabhv/METCS602TermProject#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "cookie-session": "^2.0.0-beta.3",
     "cors": "^2.8.4",
+    "ejs": "^2.5.7",
     "express": "^4.16.2",
-    "massive": "^4.7.0"
+    "express-session": "^1.15.6",
+    "massive": "^2.7.5",
+    "path": "^0.12.7"
   }
 }

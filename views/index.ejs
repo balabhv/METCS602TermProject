@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Course Scheduler</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script
+	src="https://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	crossorigin="anonymous"></script>
+	<script src="https://momentjs.com/downloads/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.2/fullcalendar.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.2/fullcalendar.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.2/fullcalendar.print.css">
+	<script type="text/javascript">
+	$(document).ready(function() {
+    	// page is now ready, initialize the calendar...
+
+    	$('#calendar').fullCalendar({
+    			weekends: false, // will hide Saturdays and Sundays
+    			defaultView: 'agendaWeek',
+    			header: {
+    				left: '',
+    				center: '',
+    				right: ''
+    			},
+    			events: [
+    			{
+    				title: 'MET CS 601: Web Application Development',
+    				start: '2018-02-26T18:00:00',
+    				end: '2018-02-26T20:45:00',
+    				allDay: false
+    			},
+    			{
+    				title: 'MET CS 521: Information Structures with Python',
+    				start: '2018-02-27T18:00:00',
+    				end: '2018-02-27T20:45:00',
+    				allDay: false
+    			}
+    			]
+    		});
+
+    });
+	</script>
+</head>
+<body>
+	<div class="container-fluid">
+		<br>
+		<h1>Dashboard</h1>
+		<br>
+		<div class="card" style="float: left;">
+			<h5 class="card-header">Actions</h5>
+			<div class="card-body">
+				<div class="card-text btn-group-vertical">
+					<a href="/addCourse" class="btn btn-primary">Register for course</a>
+					<a href="/removeCourse" class="btn btn-danger">Drop course</a>
+				</div>
+			</div>
+		</div>
+		<div class="card" style="float: right;">
+			<h5 class="card-header">Course List</h5>
+			<div class="list-group list-group-flush">
+				<div class="list-group-item">
+					<h5>MET CS 601: Web Application Development</h5>
+					<strong>Timings: </strong> Monday 6:00 - 8:45 PM
+				</div>
+				<div class="list-group-item">
+					<h5>MET CS 521: Information Structures with Python</h5>
+					<strong>Timings: </strong> Tuesday 6:00 - 8:45 PM
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<div class="container-fluid">
+		<div id='calendar'></div>
+	</div>
+</body>
+</html>
