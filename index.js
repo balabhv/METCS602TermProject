@@ -20,7 +20,7 @@ var db = null;
 if (!runningLocally) {
 	console.log(dbURL);
 	db = massive.connectSync({connectionString: dbURL});
-	app.set('db', massiveInstance);
+	app.set('db', db);
 }
 
 app.use(parser.json());
