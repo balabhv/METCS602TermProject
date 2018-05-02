@@ -18,6 +18,7 @@ const runningLocally = (dbURL == null);
 var db = null;
 
 if (!runningLocally) {
+	console.log(dbURL);
 	db = massive.connectSync(dbURL);
 	app.set('db', massiveInstance);
 }
