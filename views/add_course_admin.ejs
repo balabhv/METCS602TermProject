@@ -13,7 +13,18 @@
   <script type="text/javascript">
     angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
       $scope.submit = function() {
+        var entry = {
+          cllge_id: college,
+          dept_id: department,
+          course_nm:: course_nm,
+          course_desc: course_desc,
+          num_credits: num_credits
+        };
+        $http.post(window.location.origin + '/course/add/admin', entry).then(function(data) {
+          window.location.href = window.location.origin + '/index';
+        }, function(error) {
 
+        });
       };
       $scope.colleges = <%- JSON.stringify(colleges) %>;
       $scope.collegeSelect = function() {
@@ -36,30 +47,26 @@
       <div class="form-group"> 
           <label for"collegeField">College</label>
           <select class="form-control" id="collegeField" placeholder="College" ng-model="college" ng-change="collegeSelect()">
-            <option ng-repeat="college in colleges" ng-value="college.id">{{ college.name }}</option>
+            <option ng-repeat="college in colleges" ng-value="college.cllge_id">{{ college.cllge_nm }}</option>
           </select>
         </div>
         <div class="form-group">
           <label for"departmentField">Department</label>
           <select class="form-control" id="departmentField" ng-model="department" placeholder="Department">
-            <option ng-repeat="department in departments" ng-value="department.id">{{ department.name }}</option>
+            <option ng-repeat="department in departments" ng-value="department.dept_id">{{ department.dept_nm }}</option>
           </select>
         </div>
         <div class="form-group">
           <label for"courseNameField">Course Name</label>
-          <input type="text" id="courseNameField">
+          <input type="text" id="courseNameField" ng-model="course_nm">
         </div>
         <div class="form-group">
-          <label for"courseIdField">Course Id</label>
-          <input type="number" id="courseIdField">
+          <label for"courseDescField">Course Description</label>
+          <textarea rows="4" cols="50" id="courseDescField" ng-model="course_desc"></textarea>
         </div>
         <div class="form-group">
-          <label for"sizeField">Size</label>
-          <input type="number" id="sizeField">
-        </div>
-        <div class="form-group">
-          <label for"waitlistField">Waitlist Size</label>
-          <input type="number" id="waitlistField">
+          <label for"sizeField">Number of Credits</label>
+          <input type="number" id="sizeField" ng-model="num_credits">
         </div>
         <button id="submitButton" class="btn btn-primary" ng-click="submit()">Add Course</button>  
     </div>

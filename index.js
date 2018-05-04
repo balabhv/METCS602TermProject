@@ -113,6 +113,16 @@ app.get('/course/remove/admin', function(req, res) {
 	}
 });
 
+app.post('/course/add/admin', function(req, res) {
+	var cllge_id = req.body.cllge_id;
+	var dept_id = req.body.dept_id;
+	var course_nm = req.body.course_nm;
+	var course_desc = req.body.course_desc;
+	var num_credits = req.body.num_credits;
+	addCourseAdmin(cllge_id, dept_id, course_nm, course_desc, num_credits);
+	res.send('Success');
+});
+
 app.post('/course/remove/admin', function(req, res) {
 	var course_id = req.body.c_id;
 	removeCourseAdmin(course_id);
@@ -138,6 +148,65 @@ app.get('/removeUser', function(req, res) {
 app.post('/addClassroom', function(req, res) {
 	var c_desc = req.body.description;
 	db.classroom.insertSync({clssrm_desc: c_desc, size_lmt: 30});
+	res.send("Success");
+});
+
+app.get('/addSection', function(req, res) {
+	var colleges = getColleges();
+	var profs = getProfs();
+	var classrooms = getClasses();
+	res.render('add_section', {colleges: colleges, profs: profs, classes: classrooms});
+});
+
+app.post('/addSection', function(req, res) {
+	var cllge_id = req.body.cllge_id;
+	var dept_id = req.body.dept_id;
+	var course_id = req.body.course_id;
+	var prof_id = req.body.prof_id;
+	var clssrm_id = req.body.clssrm_id;
+	var size_lmt = req.body.size_lmt;
+	var start_tm = req.body.start_tm;
+	var end_tm = req.body.end_tm;
+	var m = req.body.m;
+	var t = req.body.t;
+	var w = req.body.w;
+	var th = req.body.th;
+	var f = req.body.f;
+    var wtlst_lmt = req.body.wtlst_lmt;
+    var section = {
+		course_id:: course,
+		prof_id: professor,
+		clssrm_id: classroom,
+		size_lmt: size_lmt,
+		start_tm: start_tm,
+		end_tm: end_tm,
+		m: m,
+		t: t,
+		w: w,
+		th: th,
+		f: f
+    };
+
+    db.section.insertSync(section);
+    var sectionResult = db.section.findOneSync(section);
+    var section_id = sectionResult.sctn_id;
+    var waitlist = {
+    	sctn_id: section_id,
+    	size_lmt: wtlst_lmt
+    };
+    db.waitlist.insertSync(waitlist);
+
+    res.send("Success");
+});
+
+app.get('/removeSection', function(req, res) {
+	res.render('remove_section');
+});
+
+app.post('/removeSection', function(req, res) {
+	var course_id = req.body.course_id;
+	var section_id = req.body.section_id;
+	removeSectionAdmin(course_id, section_id);
 	res.send("Success");
 });
 
@@ -269,6 +338,13 @@ app.get('/college/:cllge/departments', function(req, res) {
 	res.send({departments: depts});
 });
 
+app.get('/college/:cllge/:dpt/getCourses', function(req, res) {
+	var college = req.params.cllge;
+	var depts = req.params.dpt;
+	var courses = getCourseList(college, dept);
+	res.send({courses: courses});
+});
+
 app.get('/courses/:cllge/:dpt/search', function (req, res) {
 	var college = req.params.cllge;
 	var depts = req.params.dpt;
@@ -294,6 +370,18 @@ function getColleges() {
 
 function getDepartments(college) {
 	return db.department.findSync({cllge_id: college});
+}
+
+function getProfs() {
+	return db.users.findSync({type_id: 2});
+}
+
+function getClasses() {
+	return db.runSync("select * from classroom");
+}
+
+function getCourseList(college, department) {
+	return db.course.findSync({cllge_id: college, dept_id: department});
 }
 
 function getAllCourses(college, department) {
@@ -520,11 +608,26 @@ function removeCourseAdmin(course_id) {
 	var course = db.course.findOneSync({course_id: course_id});
 	var sections = db.section.findSync({course_id: course_id});
 	for (var i = 0 ; i < sections.length ; i++) {
-		db.schedule.destroySync({course_id: course_id, sctn_id: sections[i].sctn_id});
-		var waitlist = db.waitlist.findOneSync({sctn_id: sections[i].sctn_id});
-		db.waitlistpeople.destroySync({wtlst_id: waitlist.wtlst_id});
-		db.waitlist.destroySync({sctn_id: sections[i].sctn_id});
-		db.section.destroySync({sctn_id: sections[i].sctn_id});
+		removeSectionAdmin(course_id, sections[i].sctn_id);
 	}
 	db.course.destroySync({course_id: course_id});
+}
+
+function removeSectionAdmin(course_id, sctn_id) {
+	db.schedule.destroySync({course_id: course_id, sctn_id: sctn_id});
+	var waitlist = db.waitlist.findOneSync({sctn_id: sctn_id});
+	db.waitlistpeople.destroySync({wtlst_id: waitlist.wtlst_id});
+	db.waitlist.destroySync({sctn_id: sctn_id});
+	db.section.destroySync({sctn_id: sctn_id});
+}
+
+function addCourseAdmin(cllge_id, dept_id, course_nm, course_desc, num_credits) {
+	var entry = {
+		cllge_id: cllge_id,
+		dept_id: dept_id,
+		course_nm:: course_nm,
+		course_desc: course_desc,
+		num_credits: num_credits
+	};
+	db.course.insertSync(entry);
 }

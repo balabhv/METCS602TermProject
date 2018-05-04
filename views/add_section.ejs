@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html ng-app="addCourseApp">
+<head>
+	<title>Add Course</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+  crossorigin="anonymous">
+	<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script type="text/javascript">
+    angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
+      $scope.submit = function() {
+        var entry = {
+          cllge_id: college,
+          dept_id: department,
+          course_id:: course,
+          prof_id: professor,
+          clssrm_id: classroom,
+          size_lmt: size_lmt,
+          wtlst_lmt: wtlst_lmt,
+          start_tm: start_tm,
+          end_tm: end_tm,
+          m: m,
+          t: t,
+          w: w,
+          th: th,
+          f: f
+        };
+        $http.post(window.location.origin + '/addSection', entry).then(function(data) {
+          window.location.href = window.location.origin + '/index';
+        }, function(error) {
+
+        });
+      };
+      $scope.colleges = <%- JSON.stringify(colleges) %>;
+      $scope.profs = <%- JSON.stringify(profs) %>;
+      $scope.classes = <%- JSON.stringify(classes) %>;
+      $scope.collegeSelect = function() {
+        var loc = window.location.origin + '/college/' + $scope.college + "/departments";
+        $http.get(loc).then(function(data) {
+          $scope.departments = data.data.departments;
+        }, function(error) {
+          $scope.departments = [];
+        });
+      };
+      $scope.departmentSelect = function() {
+        var loc = window.location.origin + '/college/' + $scope.college + "/" + $scope.department + "/getCourses";
+        $http.get(loc).then(function(data) {
+          $scope.courses = data.data.courses;
+        }, function(error) {
+          $scope.courses = [];
+        });
+      };
+    });
+  </script>
+</head>
+<body ng-controller="AddCourseController">
+	<div class="container">
+		<br>
+		<h1>Add Section</h1>
+		<br>
+		<div class="search-frm">
+      <div class="form-group"> 
+          <label for"collegeField">College</label>
+          <select class="form-control" id="collegeField" placeholder="College" ng-model="college" ng-change="collegeSelect()">
+            <option ng-repeat="college in colleges" ng-value="college.cllge_id">{{ college.cllge_nm }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for"departmentField">Department</label>
+          <select class="form-control" id="departmentField" ng-model="department" placeholder="Department" ng-change="departmentSelect()">
+            <option ng-repeat="department in departments" ng-value="department.dept_id">{{ department.dept_nm }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for"courseField">Course</label>
+          <select class="form-control" id="courseField" ng-model="course" placeholder="Course">
+            <option ng-repeat="course in courses" ng-value="course.course_id">{{ course.course_nm }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for"profField">Professor</label>
+          <select class="form-control" id="profField" ng-model="professor" placeholder="Professor">
+            <option ng-repeat="prof in profs" ng-value="prof.user_id">{{ prof.last_nm }}, {{ prof.first_nm }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for"classField">Classroom</label>
+          <select class="form-control" id="classField" ng-model="classroom" placeholder="Classroom">
+            <option ng-repeat="class in classes" ng-value="class.clssrm_id">{{ class.clssrm_desc }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for"sizeField">Size Limit</label>
+          <input type="number" id="sizeField" ng-model="size_lmt">
+        </div>
+        <div class="form-group">
+          <label for"waitlistField">Waitlist Size</label>
+          <input type="number" id="waitlistField" ng-model="wtlst_lmt">
+        </div>
+        <div class="form-group">
+          <label for"mondayField">Monday</label>
+          <input type="checkbox" id="mondayField" ng-model="m">
+          <label for"tuesdayField">Tuesday</label>
+          <input type="checkbox" id="tuesdayField" ng-model="t">
+          <label for"wednesdayField">Wednesday</label>
+          <input type="checkbox" id="wednesdayField" ng-model="w">
+          <label for"thursdayField">Thursday</label>
+          <input type="checkbox" id="thursdayField" ng-model="th">
+          <label for"fridayField">Friday</label>
+          <input type="checkbox" id="fridayField" ng-model="f">
+        </div>
+        <div class="form-group">
+          <label for"startField">Start Time</label>
+          <input type="time" id="startField" ng-model="start_tm">
+        </div>
+        <div class="form-group">
+          <label for"endField">End Time</label>
+          <input type="time" id="endField" ng-model="end_tm">
+        </div>
+        <button id="submitButton" class="btn btn-primary" ng-click="submit()">Add Course</button>  
+    </div>
+	</div>
+
+</body>
+</html>
