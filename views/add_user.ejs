@@ -13,13 +13,14 @@
   <script type="text/javascript">
     angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
       $scope.submit = function() {
+        console.log($scope.type_id);
         var user = {
           first_nm: $scope.fname,
           last_nm: $scope.lname,
           scrn_nm: $scope.sname,
           pass_wd: $scope.pass_wd,
           email_id: $scope.email,
-          type_id: $scope.type
+          type_id: $scope.type_id
         };
         $http.post(window.location.href, user).then(function success(response) {
           window.location.href = window.location.origin + '/index';
@@ -27,13 +28,18 @@
 
         });
       };
+      $scope.options = [
+        {id: 1, desc: 'Administrator'},
+        {id: 2, desc: 'Professor'}
+        {id: 3, desc: 'Student'}
+      ]
     });
   </script>
 </head>
 <body ng-controller="AddCourseController">
 	<div class="container">
 		<br>
-		<h1>Add Course</h1>
+		<h1>Add User</h1>
 		<br>
 		<div class="search-frm">
       <div class="form-group"> 
@@ -58,10 +64,8 @@
       </div>
       <div class="form-group"> 
         <label for"typeField">User Type</label>
-        <select id="typeField" class="form-control" ng-model="type">
-          <option value="1">Administrator</option>
-          <option value="2">Professor</option>
-          <option value="3">Student</option>
+        <select id="typeField" class="form-control" ng-model="type_id">
+          <option ng-repeat="option in options" ng-value="option.id">{{option.desc}}</option>
         </select>
       </div>
       <button id="submitButton" class="btn btn-primary" ng-click="submit()">Add User</button>  
