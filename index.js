@@ -279,6 +279,14 @@ app.post('/removeCourse', function(req, res) {
 	res.send("Success");
 });
 
+app.get('/logout', function(req, res) {
+	req.session.isLoggedIn = false;
+	req.session.isAdmin = false;
+	req.session.user_data = null;
+	req.session.save();
+	res.redirect('/');
+});
+
 app.post('/login', function(req, res) {
 	var body = req.body;
 	if (runningLocally) {
@@ -286,20 +294,17 @@ app.post('/login', function(req, res) {
 			req.session.isLoggedIn = true;
 			req.session.isAdmin = false;
 			req.session.save();
-			console.log('Local success');
 			res.send('Success');
 		} else if (body.username == pocAdminUsername && body.password == pocAdminPassword) {
 			req.session.isLoggedIn = true;
 			req.session.isAdmin = true;
 			req.session.save();
 			res.send('Success');
-			console.log('Local success');
 		} else {
 			req.session.isLoggedIn = false;
 			req.session.save();
 			res.status(500);
 			res.send('Failure');
-			console.log('Local failure');
 		}
 	} else {
 		db.users.findOne({scrn_nm: body.username, pass_wd: body.password}, function(err, result) {
@@ -308,7 +313,6 @@ app.post('/login', function(req, res) {
 				req.session.save();
 				res.status(500);
 				res.send('Failure');
-				console.log('Failure');
 			} else {
 				req.session.user_data = result;
 				if (result.type_id == 1) {
@@ -316,15 +320,11 @@ app.post('/login', function(req, res) {
 					req.session.isAdmin = true;
 					req.session.save();
 					res.send('Success');
-					console.log('success');
-					console.log(req.session.isLoggedIn);
 				} else {
 					req.session.isLoggedIn = true;
 					req.session.isAdmin = false;
 					req.session.save();
 					res.send('Success');
-					console.log('success');
-					console.log(req.session.isLoggedIn);
 				}
 			}
 		});
