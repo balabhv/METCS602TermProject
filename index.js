@@ -353,7 +353,7 @@ app.post('/addCourse', function(req, res) {
 	var course_id = req.body.course_id;
 	var section_id = req.body.section_id;
 	var user_id = req.session.user_data.user_id;
-	console.log(req.session.user_data);
+	console.log(course_id, section_id);
 	addCourseStudent(course_id, section_id, user_id);
 	res.send('Success');
 });
