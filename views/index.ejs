@@ -7,14 +7,30 @@
 	src="https://code.jquery.com/jquery-3.3.1.min.js"
 	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 	crossorigin="anonymous"></script>
-	<script src="https://momentjs.com/downloads/moment.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.2/fullcalendar.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.2/fullcalendar.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.2/fullcalendar.print.css">
 	<script type="text/javascript">
 	$(document).ready(function() {
     	// page is now ready, initialize the calendar...
-
+    	var schedule = <%- JSON.stringify(schedule) %>;
+    	var events = [];
+    	for (var i = 0 ; i < schedule.length ; i++) {
+    		var desc = schedule[i].course.course_desc;
+    		var tempEvents = [];
+    		for (var j = 0 ; j < schedule[i].days.length ; j++) {
+    			var start = schedule[i].days[j].start;
+    			var end = schedule[i].days[j].end;
+    			var event = {
+    				title: desc,
+    				start: start,
+    				end: end,
+    				allDay: false
+    			};
+    			tempEvents.push(event);
+    		}
+    		events = events.concat(tempEvents); 
+    	}
     	$('#calendar').fullCalendar({
     			weekends: false, // will hide Saturdays and Sundays
     			defaultView: 'agendaWeek',
@@ -23,21 +39,19 @@
     				center: '',
     				right: ''
     			},
-    			events: [
-    			{
-    				title: 'MET CS 601: Web Application Development',
-    				start: '2018-02-26T18:00:00',
-    				end: '2018-02-26T20:45:00',
-    				allDay: false
-    			},
-    			{
-    				title: 'MET CS 521: Information Structures with Python',
-    				start: '2018-02-27T18:00:00',
-    				end: '2018-02-27T20:45:00',
-    				allDay: false
-    			}
-    			]
+    			events: events
     		});
+    	$(".closeButton").click(function(event) {
+    		var course_id = $(event.target).children('#course_id').val();
+			var section_id = $(event.target).children('#section_id').val();
+			var body = {
+				course_id: course_id,
+				section_id: section_id
+			};
+			$.post(window.location.origin + "/removeCourse", body, function(result) {
+				window.location.reload(true);
+			});
+		});
 
     });
 	</script>
@@ -52,21 +66,25 @@
 			<div class="card-body">
 				<div class="card-text btn-group-vertical">
 					<a href="/addCourse" class="btn btn-primary">Register for course</a>
-					<a href="/removeCourse" class="btn btn-danger">Drop course</a>
 				</div>
 			</div>
 		</div>
 		<div class="card" style="float: right;">
 			<h5 class="card-header">Course List</h5>
 			<div class="list-group list-group-flush">
+				<% for (var i = 0 ; i < schedule.length ; i++) { %>
 				<div class="list-group-item">
-					<h5>MET CS 601: Web Application Development</h5>
-					<strong>Timings: </strong> Monday 6:00 - 8:45 PM
+					<h5><%= schedule[i].course.course_desc %></h5>
+					<strong>Timings: </strong> <% var string = ''; for (var j = 0 ; j < schedule[i].dow.length ; j++) { string.concat(schedule[i].dow[j]) } %><%= string.substring(0, string.length - 1); %> <%= moment(schedule[i].section.start_tm).format('h:mm') %> - <%= moment(schedule[i].section.end_tm).format('h:mm A') %><br>
+					<strong>Location: </strong> <%= schedule[i].classroom.clssrm_desc %><br>
+					<strong>Professor: </strong> <%= schedule[i].professor.first_nm %> <%= schedule[i].professor.last_nm %>
+					<button type="button" class="closeButton btn btn-danger" aria-label="Close">
+						<input type="hidden" id="course_id" value=<%= schedule[i].course.course_id %>>
+						<input type="hidden" id="section_id" value=<%= schedule[i].section.section_id %>>
+					  	<span>Drop course</span>
+					</button>
 				</div>
-				<div class="list-group-item">
-					<h5>MET CS 521: Information Structures with Python</h5>
-					<strong>Timings: </strong> Tuesday 6:00 - 8:45 PM
-				</div>
+				<% } %>
 			</div>
 		</div>
 		

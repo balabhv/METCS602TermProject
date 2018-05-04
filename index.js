@@ -5,7 +5,8 @@ const parser = require('body-parser');
 const cors = require('cors');
 var session = require('express-session');
 const path = require('path');
-const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session');
+const moment = require('moment');
 
 var dbURL = process.env.DATABASE_URL;
 
@@ -64,7 +65,9 @@ app.get('/index', function(req, res) {
 		if (req.session.isAdmin) {
 			res.render('index_admin');
 		} else {
-			res.render('index');
+			var user_data = req.session.user_data;
+			var schedule = getSchedule(user_data.user_id);
+			res.render('index', {schedule: schedule, moment: moment});
 		}
 	} else {
 		res.redirect('/');
@@ -101,16 +104,108 @@ app.get('/course/add/admin', function(req, res) {
 	}
 });
 
+app.get('/course/remove/admin', function(req, res) {
+	if (req.session.isLoggedIn) {
+		res.render('remove_course_admin');
+	} else {
+		res.render('login');
+	}
+});
+
+app.post('/course/remove/admin', function(req, res) {
+	var course_id = req.body.c_id;
+	removeCourseAdmin(course_id);
+	res.send('Success');
+});
+
+app.get('/addClassroom', function(req, res) {
+	res.render('add_classroom');
+});
+
+app.get('/addUser', function(req, res) {
+	res.render('add_user');
+});
+
+app.get('/removeClassroom', function(req, res) {
+	res.render('remove_classroom');
+});
+
+app.get('/removeUser', function(req, res) {
+	res.render('remove_user');
+});
+
+app.post('/addClassroom', function(req, res) {
+	var c_desc = req.body.description;
+	db.classroom.insertSync({clssrm_desc: c_desc});
+	res.send("Success");
+});
+
+app.post('/addUser', function(req, res) {
+	var first_nm = req.body.first_nm;
+	var last_nm = req.body.last_nm;
+	var scrn_nm = req.body.scrn_nm;
+	var pass_wd = req.body.pass_wd;
+	var email_id = req.body.email_id;
+	var type = req.body.type;
+	var user = {
+		first_nm: first_nm,
+		last_nm: last_nm,
+		scrn_nm: scrn_nm,
+		pass_wd: pass_wd,
+		email_id: email_id,
+		type_id: type
+	};
+	db.users.insertSync(user);
+	res.send("Success");
+});
+
+app.post('/removeClassroom', function(req, res) {
+	var classroom_id = req.body.classroom_id;
+	var sections = db.section.findSync({clssrm_id: classroom_id});
+	for (var i = 0 ; i < sections.length ; i++) {
+		db.schedule.destroySync({sctn_id: sections[i].sctn_id});
+		var waitlist = db.waitlist.findOneSync({sctn_id: sections[i].sctn_id});
+		db.waitlistpeople.destroySync({wtlst_id: waitlist.wtlst_id});
+		db.waitlist.destroySync({sctn_id: sections[i].sctn_id});
+		db.section.destroySync({sctn_id: sections[i].sctn_id});
+	}
+	db.classroom.destroySync({clssrm_id: classroom_id});
+	res.send("Success");
+});
+
+app.post('/removeUser', function(req, res) {
+	var user_id = req.body.user_id;
+	db.waitlistpeople.destroySync({user_id: user_id});
+	db.schedule.destroySync({user_id: user_id});
+	var sections = db.section.findSync({prof_id: user_id});
+	for (var i = 0 ; i < sections.length ; i++) {
+		db.schedule.destroySync({sctn_id: sections[i].sctn_id});
+		var waitlist = db.waitlist.findOneSync({sctn_id: sections[i].sctn_id});
+		db.waitlistpeople.destroySync({wtlst_id: waitlist.wtlst_id});
+		db.waitlist.destroySync({sctn_id: sections[i].sctn_id});
+		db.section.destroySync({sctn_id: sections[i].sctn_id});
+	}
+	db.users.destroySync({user_id: user_id});
+	res.send("Success");
+
+});
+
 app.get('/removeCourse', function(req, res) {
 	if (req.session.isLoggedIn) {
 		if (req.session.isAdmin) {
 			res.redirect('/course/remove/admin');
-		} else {
-			res.redirect('/course/remove');
 		}
 	} else {
 		res.render('login');
 	}
+});
+
+app.post('/removeCourse', function(req, res) {
+	var course_id = req.body.c_id;
+	var section_id = req.body.s_id;
+	var user_id = req.session.user_data.user_id;
+	dropCourseStudent(course_id, section_id, user_id);
+	res.send("Success");
 });
 
 app.post('/login', function(req, res) {
@@ -141,7 +236,7 @@ app.post('/login', function(req, res) {
 				res.send('Failure');
 			} else {
 				req.session.user_data = result;
-				if (result.type_id == 0) {
+				if (result.type_id == 1) {
 					req.session.isLoggedIn = true;
 					req.session.isAdmin = true;
 					req.session.save();
@@ -172,6 +267,14 @@ app.get('/courses/:cllge/:dpt/search', function (req, res) {
 	res.render('search_results', {courses: courses});
 });
 
+app.post('/addCourse', function(req, res) {
+	var course_id = req.body.course_id;
+	var section_id = req.body.section_id;
+	var user_id = req.session.user_data.user_id;
+	addCourseStudent(course_id, section_id, user_id);
+	res.send('Success');
+});
+
 app.listen((process.env.PORT || 5000), function() {
 	console.log('Node app is running on port', (process.env.PORT || 5000));
 });
@@ -192,7 +295,73 @@ function getAllCourses(college, department) {
 		for (var j = 0 ; j < sections.length ; j++) {
 			var section = sections[j];
 			var professor = db.users.findSync({user_id: section.prof_id});
-			section.prof = professor;
+			var classroom = db.classroom.findOneSync({clssrm_id: section.clssrm_id});
+			var start_tm = section.start_tm;
+			var start_tm_hour = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [start_tm]);
+			var start_tm_minute = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [start_tm]);
+			var end_tm = section.end_tm;
+			var end_tm_hour = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [end_tm]);
+			var end_tm_minute = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [end_tm]);
+			var dow = [];
+			var days = [];
+			var monday = getMonday(new Date());
+			if (section.m) {
+				dow.push('Monday');
+				var start = monday.setHours(start_tm_hour, start_tm_minute);
+				var end = monday.setHours(end_tm_hour, end_tm_minute);
+				var day = {
+					start: start,
+					end: end
+				};
+				days.push(day);
+			} if (section.t) {
+				dow.push('Tuesday');
+				var tuesday = monday.addDays(1);
+				var start = tuesday.setHours(start_tm_hour, start_tm_minute);
+				var end = tuesday.setHours(end_tm_hour, end_tm_minute);
+				var day = {
+					start: start,
+					end: end
+				};
+				days.push(day);
+			} if (section.w) {
+				dow.push('Wednesday');
+				var wednesday = monday.addDays(2);
+				var start = wednesday.setHours(start_tm_hour, start_tm_minute);
+				var end = wednesday.setHours(end_tm_hour, end_tm_minute);
+				var day = {
+					start: start,
+					end: end
+				};
+				days.push(day);
+			} if (section.th) {
+				dow.push('Thursday');
+				var thursday = monday.addDays(3);
+				var start = thursday.setHours(start_tm_hour, start_tm_minute);
+				var end = thursday.setHours(end_tm_hour, end_tm_minute);
+				var day = {
+					start: start,
+					end: end
+				};
+				days.push(day);
+			} if (section.f) {
+				dow.push('Friday');
+				var friday = monday.addDays(4);
+				var start = friday.setHours(start_tm_hour, start_tm_minute);
+				var end = friday.setHours(end_tm_hour, end_tm_minute);
+				var day = {
+					start: start,
+					end: end
+				};
+				days.push(day);
+			}
+			var obj = {
+				classroom: classroom,
+				professor: professor,
+				dow: dow,
+				days: days
+			};
+			section.data = obj;
 			sections[j] = section;
 		}
 		course.sections = sections;
@@ -202,7 +371,84 @@ function getAllCourses(college, department) {
 }
 
 function getSchedule(user_id) {
-	return db.schedule.findSync({user_id: user_id});
+	var scheduleRaw = db.schedule.findSync({user_id: user_id});
+	var schedule = [];
+	for (var i = 0 ; i < scheduleRaw.length ; i++) {
+		var course = db.course.findOneSync({course_id: scheduleRaw[i].course_id});
+		var section = db.section.findOneSync({sctn_id: scheduleRaw[i].sctn_id});
+		var classroom = db.classroom.findOneSync({clssrm_id: section.clssrm_id});
+		var professor = db.users.findOneSync({user_id, section.prof_id});
+		var start_tm = section.start_tm;
+		var start_tm_hour = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [start_tm]);
+		var start_tm_minute = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [start_tm]);
+		var end_tm = section.end_tm;
+		var end_tm_hour = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [end_tm]);
+		var end_tm_minute = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [end_tm]);
+		var dow = [];
+		var days = [];
+		var monday = getMonday(new Date());
+		if (section.m) {
+			dow.push('Monday');
+			var start = monday.setHours(start_tm_hour, start_tm_minute);
+			var end = monday.setHours(end_tm_hour, end_tm_minute);
+			var day = {
+				start: start,
+				end: end
+			};
+			days.push(day);
+		} if (section.t) {
+			dow.push('Tuesday');
+			var tuesday = monday.addDays(1);
+			var start = tuesday.setHours(start_tm_hour, start_tm_minute);
+			var end = tuesday.setHours(end_tm_hour, end_tm_minute);
+			var day = {
+				start: start,
+				end: end
+			};
+			days.push(day);
+		} if (section.w) {
+			dow.push('Wednesday');
+			var wednesday = monday.addDays(2);
+			var start = wednesday.setHours(start_tm_hour, start_tm_minute);
+			var end = wednesday.setHours(end_tm_hour, end_tm_minute);
+			var day = {
+				start: start,
+				end: end
+			};
+			days.push(day);
+		} if (section.th) {
+			dow.push('Thursday');
+			var thursday = monday.addDays(3);
+			var start = thursday.setHours(start_tm_hour, start_tm_minute);
+			var end = thursday.setHours(end_tm_hour, end_tm_minute);
+			var day = {
+				start: start,
+				end: end
+			};
+			days.push(day);
+		} if (section.f) {
+			dow.push('Friday');
+			var friday = monday.addDays(4);
+			var start = friday.setHours(start_tm_hour, start_tm_minute);
+			var end = friday.setHours(end_tm_hour, end_tm_minute);
+			var day = {
+				start: start,
+				end: end
+			};
+			days.push(day);
+		}
+		var obj = {
+			course: course,
+			section: section,
+			classroom: classroom,
+			professor: professor,
+			dow: dow,
+			days: days
+		};
+		schedule.push(obj);
+	}
+	return schedule;
+	
 }
 
 function addCourseStudent(course_id, section_id, user_id) {
@@ -258,4 +504,17 @@ function isSectionOpen(sctn_id) {
 	var size = section.size_lmt;
 	var peopleInClass = db.schedule.findSync({sctn_id: sctn_id});
 	return (peopleInClass.length < size);
+}
+
+function removeCourseAdmin(course_id) {
+	var course = db.course.findOneSync({course_id: course_id});
+	var sections = db.section.findSync({course_id: course_id});
+	for (var i = 0 ; i < sections.length ; i++) {
+		db.schedule.destroySync({course_id: course_id, sctn_id: sections[i].sctn_id});
+		var waitlist = db.waitlist.findOneSync({sctn_id: sections[i].sctn_id});
+		db.waitlistpeople.destroySync({wtlst_id: waitlist.wtlst_id});
+		db.waitlist.destroySync({sctn_id: sections[i].sctn_id});
+		db.section.destroySync({sctn_id: sections[i].sctn_id});
+	}
+	db.course.destroySync({course_id: course_id});
 }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="addCourseApp">
+<head>
+	<title>Add Classroom</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script type="text/javascript">
+    angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
+      $scope.submit = function() {
+        $http.post(window.location.href, {description: $scope.classroom_desc}).then(function success(response) {
+          window.location.href = window.location.origin + '/index';
+        }, function error(response) {
+
+        });
+      };
+    });
+  </script>
+</head>
+<body ng-controller="AddCourseController">
+	<div class="container">
+		<br>
+		<h1>Add Classroom</h1>
+		<br>
+		<div class="search-frm">
+      <div class="form-group"> 
+        <label for"courseIdField">Classroom Description</label>
+        <input type="text" id="courseIdField" ng-model="classroom_desc">
+      </div>
+      <button id="submitButton" class="btn btn-primary" ng-click="submit()">Add Classroom</button>  
+    </div>
+	</div>
+
+</body>
+</html>

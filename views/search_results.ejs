@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Search Courses</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script
+	src="https://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	crossorigin="anonymous"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$(".closeButton").click(function(event) {
+			var course_id = $(event.target).children('#course_id').val();
+			var section_id = $(event.target).children('#section_id').val();
+			var body = {
+				course_id: course_id,
+				section_id: section_id
+			};
+			$.post(window.location.origin + "/addCourse", body, function(result) {
+				window.location.href = window.location.origin + '/index';
+			});
+		});
+	});
+	</script>>
+</head>
+<body>
+	<div class="container-fluid">
+		<br>
+		<h1>Search Results</h1>
+		<br>
+		<% for (var i = 0 ; i < courses.length ; i++) { %>
+			<div class="list-group-item">
+				<h5><%= courses[i].course.course_desc %></h5>
+				<% for (var j = 0 ; j < courses[i].sections.length ; j++) { %>
+					<strong>Timings: </strong> <% var string = ''; for (var k = 0 ; k < courses[i].sections[j].data.dow.length ; k++) { string.concat(courses[i].sections[j].data.dow[k]) } %><%= string.substring(0, string.length - 1); %> <%= moment(courses[i].sections[j].data.start_tm).format('h:mm') %> - <%= moment(courses[i].sections[j].data.end_tm).format('h:mm A') %><br>
+					<strong>Location: </strong> <%= courses[i].sections[j].data.classroom.clssrm_desc %><br>
+					<strong>Professor: </strong> <%= courses[i].sections[j].data.professor.first_nm %> <%= courses[i].sections[j].data.professor.last_nm %>
+					<button type="button" class="closeButton btn btn-primary" aria-label="Add Course">
+						<input type="hidden" id="course_id" value=<%= courses[i].course_id %>>
+						<input type="hidden" id="section_id" value=<%= courses[i].sections[j].section_id %>>
+					  	<span>Add course</span>
+					</button>
+				<% } %>
+			</div>
+		<% } %>
+		
+	</div>
+</body>
+</html>
