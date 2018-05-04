@@ -78,7 +78,7 @@
 					<h5><%= schedule[i].course.course_desc %></h5>
 					<strong>Timings: </strong> <%= schedule[i].dowString %> <%= moment(schedule[i].days[i].start_tm).format('h:mm') %> - <%= moment(schedule[i].days[i].end_tm).format('h:mm A') %><br>
 					<strong>Location: </strong> <%= schedule[i].classroom.clssrm_desc %><br>
-					<strong>Professor: </strong> <%= schedule[i].professor[0].first_nm %> <%= schedule[i].professor[0].last_nm %>
+					<strong>Professor: </strong> <%= schedule[i].professor.first_nm %> <%= schedule[i].professor.last_nm %>
 					<button type="button" class="closeButton btn btn-primary" aria-label="Drop Course" data-course-id='<%= schedule[i].course.course_id %>' data-section-id='<%= schedule[i].section.sctn_i %>'>
 					  	<span>Drop course</span>
 					</button>
