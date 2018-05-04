@@ -13,6 +13,7 @@
   <script type="text/javascript">
     angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
       $scope.submit = function() {
+        console.log($scope.start_tm);
         var entry = {
           cllge_id: $scope.college,
           dept_id: $scope.department,
