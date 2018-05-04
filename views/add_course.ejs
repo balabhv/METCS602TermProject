@@ -11,7 +11,7 @@
   <script type="text/javascript">
     angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
       $scope.submit = function() {
-        var loc = window.location.origin + '/courses/' + $scope.college + "/" + $scope.deparment + "/search";
+        var loc = window.location.origin + '/courses/' + $scope.college + "/" + $scope.department + "/search";
         window.location.href = loc;
       };
       $scope.colleges = <%- JSON.stringify(colleges) %>;
@@ -24,9 +24,6 @@
           $scope.departments = [];
         });
       };
-      $scope.departmentSelect = function() {
-        console.log($scope.department);
-      }
     });
   </script>
 </head>
@@ -44,7 +41,7 @@
         </div>
         <div class="form-group">
           <label for"departmentField">Department</label>
-          <select class="form-control" id="departmentField" ng-model="department" placeholder="Department" ng-change="departmentSelect()">
+          <select class="form-control" id="departmentField" ng-model="department" placeholder="Department">
             <option ng-repeat="department in departments" ng-value="department.dept_id">{{ department.dept_nm }}</option>
           </select>
         </div>
