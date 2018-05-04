@@ -476,11 +476,11 @@ function getSchedule(user_id) {
 		var classroom = db.classroom.findOneSync({clssrm_id: section.clssrm_id});
 		var professor = db.users.findOneSync({user_id: section.prof_id});
 		var start_tm = section.start_tm;
-		var start_tm_hour = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [start_tm]);
-		var start_tm_minute = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [start_tm]);
+		var start_tm_hour = new Date(start_tm).getHours();
+		var start_tm_minute = new Date(start_tm).getMinutes();
 		var end_tm = section.end_tm;
-		var end_tm_hour = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [end_tm]);
-		var end_tm_minute = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [end_tm]);
+		var end_tm_hour = new Date(end_tm).getHours();
+		var end_tm_minute = new Date(end_tm).getMinutes();
 		var dow = [];
 		var days = [];
 		var monday = getMonday(new Date());
