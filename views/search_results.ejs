@@ -28,12 +28,12 @@
 		<br>
 		<h1>Search Results</h1>
 		<br>
-		<% console.log(courses[0].sections[0].data.dow); if (courses.length > 0) { %>
+		<% console.log(courses[0].sections[0].data.days); if (courses.length > 0) { %>
 			<% for (var i = 0 ; i < courses.length ; i++) { %>
 				<div class="list-group-item">
 					<h5><%= courses[i].course_desc %></h5>
 					<% for (var j = 0 ; j < courses[i].sections.length ; j++) { %>
-						<strong>Timings: </strong> <% var string = ''; for (var k = 0 ; k < courses[i].sections[j].data.dow.length ; k++) { string.concat(courses[i].sections[j].data.dow[k]) } %><%= string.substring(0, string.length - 1); %> <%= moment(courses[i].sections[j].start_tm).format('h:mm') %> - <%= moment(courses[i].sections[j].end_tm).format('h:mm A') %><br>
+						<strong>Timings: </strong> <% var string = ''; for (var k = 0 ; k < courses[i].sections[j].data.dow.length ; k++) { string.concat(courses[i].sections[j].data.dow[k]) } %><%= string.substring(0, string.length - 1); %> <%= moment(courses[i].sections[j].days[j]).format('h:mm') %> - <%= moment(courses[i].sections[j].days[j]).format('h:mm A') %><br>
 						<strong>Location: </strong> <%= courses[i].sections[j].data.classroom.clssrm_desc %><br>
 						<strong>Professor: </strong> <%= courses[i].sections[j].data.professor[0].first_nm %> <%= courses[i].sections[j].data.professor[0].last_nm %>
 						<button type="button" class="closeButton btn btn-primary" aria-label="Add Course">
