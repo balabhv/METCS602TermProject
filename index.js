@@ -44,17 +44,27 @@ function getMonday(d) {
     return new Date(d.setDate(diff));
 }
 
+if (runningLocally) {
+	app.use(session({
+		secret: 'loggedIn',
+		resave: false,
+	  	saveUninitialized: true,
+		cookie: { secure: !runningLocally}
+	}));
+} else {
+	app.use(session({
+		store: new (require('connect-pg-simple')(session))(),
+		secret: 'loggedIn',
+		resave: false,
+	  	saveUninitialized: true,
+		cookie: { secure: !runningLocally}
+	}));
+}
 
-app.use(session({
-	secret: 'loggedIn',
-	resave: false,
-  	saveUninitialized: true,
-	cookie: { secure: !runningLocally}
-}));
+
 
 app.get('/', function(req, res) {
 	if (req.session.isLoggedIn) {
-		console.log('Redirected');
 		res.redirect('/index');
 	} else {
 		res.render('login');
