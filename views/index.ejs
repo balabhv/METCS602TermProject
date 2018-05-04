@@ -76,7 +76,7 @@
 				<% for (var i = 0 ; i < schedule.length ; i++) { %>
 				<div class="list-group-item">
 					<h5><%= schedule[i].course.course_desc %></h5>
-					<strong>Timings: </strong> <%= schedule[i].dowString %> <%= moment(schedule[i].days[i].start_tm).format('h:mm') %> - <%= moment(schedule[i].days[i].end_tm).format('h:mm A') %><br>
+					<strong>Timings: </strong> <%= schedule[i].dowString %> <%= moment(schedule[i].days[i].start).format('h:mm') %> - <%= moment(schedule[i].days[i].end).format('h:mm A') %><br>
 					<strong>Location: </strong> <%= schedule[i].classroom.clssrm_desc %><br>
 					<strong>Professor: </strong> <%= schedule[i].professor.first_nm %> <%= schedule[i].professor.last_nm %>
 					<button type="button" class="closeButton btn btn-primary" aria-label="Drop Course" data-course-id='<%= schedule[i].course.course_id %>' data-section-id='<%= schedule[i].section.sctn_i %>'>
