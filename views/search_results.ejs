@@ -10,8 +10,9 @@
 	<script type="text/javascript">
 	$(document).ready(function() {
 		$(".closeButton").click(function(event) {
-			var course_id = $(event.target).children('#course_id').val();
-			var section_id = $(event.target).children('#section_id').val();
+
+			var course_id = $(event.target).attr('data-course-id');
+			var section_id = $(event.target).attr('data-section-id');
 			console.log(course_id, section_id);
 			var body = {
 				course_id: course_id,
@@ -37,9 +38,7 @@
 						<strong>Timings: </strong> <%= courses[i].sections[j].data.dowString %> <%= moment(courses[i].sections[j].data.days[0].start).format('h:mm') %> - <%= moment(courses[i].sections[j].data.days[0].end).format('h:mm A') %><br>
 						<strong>Location: </strong> <%= courses[i].sections[j].data.classroom.clssrm_desc %><br>
 						<strong>Professor: </strong> <%= courses[i].sections[j].data.professor[0].first_nm %> <%= courses[i].sections[j].data.professor[0].last_nm %>
-						<button type="button" class="closeButton btn btn-primary" aria-label="Add Course">
-							<input type="hidden" id="course_id" value='<%= courses[i].course_id %>'>
-							<input type="hidden" id="section_id" value='<%= courses[i].sections[j].sctn_id %>'>
+						<button type="button" class="closeButton btn btn-primary" aria-label="Add Course" data-course-id='<%= courses[i].course_id %>' data-section-id='<%= courses[i].sections[j].sctn_id %>'>
 						  	<span>Add course</span>
 						</button>
 					<% } %>

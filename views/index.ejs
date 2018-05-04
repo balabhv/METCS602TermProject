@@ -76,12 +76,12 @@
 				<% for (var i = 0 ; i < schedule.length ; i++) { %>
 				<div class="list-group-item">
 					<h5><%= schedule[i].course.course_desc %></h5>
-					<strong>Timings: </strong> <% var string = ''; for (var j = 0 ; j < schedule[i].dow.length ; j++) { string.concat(schedule[i].dow[j]) } %><%= string.substring(0, string.length - 1); %> <%= moment(schedule[i].section.start_tm).format('h:mm') %> - <%= moment(schedule[i].section.end_tm).format('h:mm A') %><br>
+					<strong>Timings: </strong>  <%= moment(schedule[i].section.start_tm).format('h:mm') %> - <%= moment(schedule[i].section.end_tm).format('h:mm A') %><br>
 					<strong>Location: </strong> <%= schedule[i].classroom.clssrm_desc %><br>
 					<strong>Professor: </strong> <%= schedule[i].professor.first_nm %> <%= schedule[i].professor.last_nm %>
 					<button type="button" class="closeButton btn btn-danger" aria-label="Close">
-						<input type="hidden" id="course_id" value=<%= schedule[i].course.course_id %>>
-						<input type="hidden" id="section_id" value=<%= schedule[i].section.section_id %>>
+						<input type="hidden" id="course_id" value='<%= schedule[i].course.course_id %>'>
+						<input type="hidden" id="section_id" value='<%= schedule[i].section.sctn_id %>'>
 					  	<span>Drop course</span>
 					</button>
 				</div>
