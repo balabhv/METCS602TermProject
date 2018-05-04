@@ -181,6 +181,7 @@ app.post('/addSection', function(req, res) {
 		size_lmt: size_lmt,
 		start_tm: start_tm,
 		end_tm: end_tm,
+		m: m,
 		t: t,
 		w: w,
 		th: th,
