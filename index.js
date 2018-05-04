@@ -293,6 +293,7 @@ function getAllCourses(college, department) {
 		var course = courses[i];
 		var sections = db.section.findSync({course_id: course.course_id});
 		for (var j = 0 ; j < sections.length ; j++) {
+			
 			var section = sections[j];
 			var professor = db.users.findSync({user_id: section.prof_id});
 			var classroom = db.classroom.findOneSync({clssrm_id: section.clssrm_id});
@@ -377,7 +378,7 @@ function getSchedule(user_id) {
 		var course = db.course.findOneSync({course_id: scheduleRaw[i].course_id});
 		var section = db.section.findOneSync({sctn_id: scheduleRaw[i].sctn_id});
 		var classroom = db.classroom.findOneSync({clssrm_id: section.clssrm_id});
-		var professor = db.users.findOneSync({user_id, section.prof_id});
+		var professor = db.users.findOneSync({user_id: section.prof_id});
 		var start_tm = section.start_tm;
 		var start_tm_hour = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [start_tm]);
 		var start_tm_minute = db.runSync("select EXTRACT(HOUR FROM TIME '$1')", [start_tm]);
