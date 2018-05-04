@@ -625,7 +625,7 @@ function addCourseAdmin(cllge_id, dept_id, course_nm, course_desc, num_credits) 
 	var entry = {
 		cllge_id: cllge_id,
 		dept_id: dept_id,
-		course_nm:: course_nm,
+		course_nm: course_nm,
 		course_desc: course_desc,
 		num_credits: num_credits
 	};
