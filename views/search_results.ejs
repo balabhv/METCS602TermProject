@@ -21,14 +21,14 @@
 			});
 		});
 	});
-	</script>>
+	</script>
 </head>
 <body>
 	<div class="container-fluid">
 		<br>
 		<h1>Search Results</h1>
 		<br>
-		<% if (courses.length > 0) { %>
+		<% console.log(courses); if (courses.length > 0) { %>
 			<% for (var i = 0 ; i < courses.length ; i++) { %>
 				<div class="list-group-item">
 					<h5><%= courses[i].course_desc %></h5>
