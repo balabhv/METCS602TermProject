@@ -19,6 +19,7 @@
         var loc = window.location.origin + '/college/' + $scope.college + "/departments";
         $http.get(loc).then(function(data) {
           $scope.departments = data.data.departments;
+          console.log($scope.departments);
         }, function(error) {
           $scope.departments = [];
         });
