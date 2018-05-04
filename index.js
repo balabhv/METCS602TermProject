@@ -54,6 +54,7 @@ app.use(session({
 
 app.get('/', function(req, res) {
 	if (req.session.isLoggedIn) {
+		console.log('Redirected');
 		res.redirect('/index');
 	} else {
 		res.render('login');
@@ -63,10 +64,12 @@ app.get('/', function(req, res) {
 app.get('/index', function(req, res) {
 	if (req.session.isLoggedIn) {
 		if (req.session.isAdmin) {
+			console.log('Showed index admin');
 			res.render('index_admin');
 		} else {
 			var user_data = req.session.user_data;
 			var schedule = getSchedule(user_data.user_id);
+			console.log('Showed index');
 			res.render('index', {schedule: schedule, moment: moment});
 		}
 	} else {
