@@ -402,6 +402,7 @@ function getAllCourses(college, department) {
 			var monday = getMonday(new Date());
 			if (section.m) {
 				dow.push('Monday');
+				console.log(monday);
 				var start = monday.setHours(start_tm_hour, start_tm_minute);
 				var end = monday.setHours(end_tm_hour, end_tm_minute);
 				var day = {
@@ -422,6 +423,7 @@ function getAllCourses(college, department) {
 			} if (section.w) {
 				dow.push('Wednesday');
 				var wednesday = monday.addDays(2);
+				console.log(wednesday);
 				var start = wednesday.setHours(start_tm_hour, start_tm_minute);
 				var end = wednesday.setHours(end_tm_hour, end_tm_minute);
 				var day = {
@@ -442,6 +444,7 @@ function getAllCourses(college, department) {
 			} if (section.f) {
 				dow.push('Friday');
 				var friday = monday.addDays(4);
+				console.log(friday);
 				var start = friday.setHours(start_tm_hour, start_tm_minute);
 				var end = friday.setHours(end_tm_hour, end_tm_minute);
 				var day = {
