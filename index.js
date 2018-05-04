@@ -268,8 +268,8 @@ app.get('/removeCourse', function(req, res) {
 });
 
 app.post('/removeCourse', function(req, res) {
-	var course_id = parseInt(req.body.c_id);
-	var section_id = parseInt(req.body.s_id);
+	var course_id = req.body.c_id;
+	var section_id = req.body.s_id;
 	var user_id = req.session.user_data.user_id;
 	dropCourseStudent(course_id, section_id, user_id);
 	res.send("Success");
@@ -350,8 +350,8 @@ app.get('/courses/:cllge/:dpt/search', function (req, res) {
 });
 
 app.post('/addCourse', function(req, res) {
-	var course_id = parseInt(req.body.course_id);
-	var section_id = parseInt(req.body.section_id);
+	var course_id = req.body.course_id;
+	var section_id = req.body.section_id;
 	var user_id = req.session.user_data.user_id;
 	console.log(course_id, section_id);
 	addCourseStudent(course_id, section_id, user_id);
