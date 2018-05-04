@@ -173,9 +173,9 @@ app.post('/addSection', function(req, res) {
 	var f = req.body.f;
     var wtlst_lmt = req.body.wtlst_lmt;
     var section = {
-		course_id: course,
-		prof_id: professor,
-		clssrm_id: classroom,
+		course_id: course_id,
+		prof_id: prof_id,
+		clssrm_id: clssrm_id,
 		size_lmt: size_lmt,
 		start_tm: start_tm,
 		end_tm: end_tm,
