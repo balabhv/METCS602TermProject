@@ -215,17 +215,20 @@ app.post('/login', function(req, res) {
 			req.session.isLoggedIn = true;
 			req.session.isAdmin = false;
 			req.session.save();
+			console.log('Local success');
 			res.send('Success');
 		} else if (body.username == pocAdminUsername && body.password == pocAdminPassword) {
 			req.session.isLoggedIn = true;
 			req.session.isAdmin = true;
 			req.session.save();
 			res.send('Success');
+			console.log('Local success');
 		} else {
 			req.session.isLoggedIn = false;
 			req.session.save();
 			res.status(500);
 			res.send('Failure');
+			console.log('Local failure');
 		}
 	} else {
 		db.users.findOne({scrn_nm: body.username, pass_wd: body.password}, function(err, result) {
@@ -234,6 +237,7 @@ app.post('/login', function(req, res) {
 				req.session.save();
 				res.status(500);
 				res.send('Failure');
+				console.log('Failure');
 			} else {
 				req.session.user_data = result;
 				if (result.type_id == 1) {
@@ -241,11 +245,13 @@ app.post('/login', function(req, res) {
 					req.session.isAdmin = true;
 					req.session.save();
 					res.send('Success');
+					console.log('success');
 				} else {
 					req.session.isLoggedIn = true;
 					req.session.isAdmin = false;
 					req.session.save();
 					res.send('Success');
+					console.log('success');
 				}
 			}
 		});
@@ -293,7 +299,7 @@ function getAllCourses(college, department) {
 		var course = courses[i];
 		var sections = db.section.findSync({course_id: course.course_id});
 		for (var j = 0 ; j < sections.length ; j++) {
-			
+
 			var section = sections[j];
 			var professor = db.users.findSync({user_id: section.prof_id});
 			var classroom = db.classroom.findOneSync({clssrm_id: section.clssrm_id});
