@@ -164,6 +164,7 @@ app.post('/addSection', function(req, res) {
 	var prof_id = req.body.prof_id;
 	var clssrm_id = req.body.clssrm_id;
 	var size_lmt = req.body.size_lmt;
+	console.log(req.body.start_tm);
 	var start_tm = req.body.start_tm.toISOString();
 	start_tm = start_tm.substring(start_tm.indexOf("T") + 1);
 	var end_tm = req.body.end_tm.toISOString();
