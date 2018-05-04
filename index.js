@@ -449,6 +449,7 @@ function getData(course, section, classroom, professor, format) {
 			start: start.toDate(),
 			end: end.toDate()
 		};
+		days.push(day);
 	} if (section.th) {
 		dow.push('Thursday');
 		var start = moment().isoWeekday(4);
@@ -461,6 +462,7 @@ function getData(course, section, classroom, professor, format) {
 			start: start.toDate(),
 			end: end.toDate()
 		};
+		days.push(day);
 	} if (section.f) {
 		dow.push('Friday');
 		var start = moment().isoWeekday(5);
@@ -475,6 +477,11 @@ function getData(course, section, classroom, professor, format) {
 		};
 		days.push(day);
 	}
+	var dowString = '';
+	for (var i = 0 ; i < dow.length ; i++) {
+		dowString += dow[i] + ', ';
+	}
+	dowString = dowString.substring(0, dowString.length - 1);
 	if (format == 0) {
 		var obj = {
 			course: course,
@@ -482,7 +489,8 @@ function getData(course, section, classroom, professor, format) {
 			classroom: classroom,
 			professor: professor,
 			dow: dow,
-			days: days
+			days: days,
+			dowString: dowString
 		};
 		return obj;
 	} else {
@@ -490,7 +498,8 @@ function getData(course, section, classroom, professor, format) {
 			classroom: classroom,
 			professor: professor,
 			dow: dow,
-			days: days
+			days: days,
+			dowString: dowString
 		};
 		return obj;
 	}
