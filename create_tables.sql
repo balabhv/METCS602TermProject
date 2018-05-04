@@ -47,8 +47,8 @@ CREATE TABLE SECTION(
     w boolean not null DEFAULT FALSE,
     th boolean not null DEFAULT FALSE,
     f boolean not null DEFAULT FALSE,
-    start_tm time not null,
-    end_tm time not null
+    start_tm TIMESTAMP not null,
+    end_tm TIMESTAMP not null
 );
 CREATE SEQUENCE clssrm_id_seq;
 CREATE TABLE CLASSROOM(

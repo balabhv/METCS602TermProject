@@ -33,7 +33,7 @@
 				<div class="list-group-item">
 					<h5><%= courses[i].course_desc %></h5>
 					<% for (var j = 0 ; j < courses[i].sections.length ; j++) { %>
-						<strong>Timings: </strong> <% var string = ''; for (var k = 0 ; k < courses[i].sections[j].data.dow.length ; k++) { string.concat(courses[i].sections[j].data.dow[k]) } %><%= string.substring(0, string.length - 1); %> <%= moment(courses[i].sections[j].days[j]).format('h:mm') %> - <%= moment(courses[i].sections[j].days[j]).format('h:mm A') %><br>
+						<strong>Timings: </strong> <% var string = ''; for (var k = 0 ; k < courses[i].sections[j].data.dow.length ; k++) { string.concat(courses[i].sections[j].data.dow[k]) } %><%= string.substring(0, string.length - 1); %> <%= moment(courses[i].sections[j].data.days[k]).format('h:mm') %> - <%= moment(courses[i].sections[j].data.days[j]).format('h:mm A') %><br>
 						<strong>Location: </strong> <%= courses[i].sections[j].data.classroom.clssrm_desc %><br>
 						<strong>Professor: </strong> <%= courses[i].sections[j].data.professor[0].first_nm %> <%= courses[i].sections[j].data.professor[0].last_nm %>
 						<button type="button" class="closeButton btn btn-primary" aria-label="Add Course">
