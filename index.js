@@ -7,7 +7,6 @@ var session = require('express-session');
 const path = require('path');
 const cookieSession = require('cookie-session');
 const moment = require('moment');
-var pgSession = require('connect-pg-simple')(session);
 
 var dbURL = process.env.DATABASE_URL;
 
@@ -45,24 +44,10 @@ function getMonday(d) {
     return new Date(d.setDate(diff));
 }
 
-if (runningLocally) {
-	app.use(session({
-		secret: 'loggedIn',
-		resave: false,
-	  	saveUninitialized: true,
-		cookie: { secure: !runningLocally}
-	}));
-} else {
-	app.use(session({
-		store: new pgSession({
-			conString: dbURL
-		}),
-		secret: 'loggedIn',
-		resave: false,
-	  	saveUninitialized: true,
-		cookie: { secure: !runningLocally}
-	}));
-}
+app.use(cookieSession({
+	name: 'loggedIn',
+	keys: ['key1', 'key2']
+}));
 
 
 
