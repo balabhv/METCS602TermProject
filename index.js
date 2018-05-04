@@ -179,9 +179,8 @@ app.post('/addSection', function(req, res) {
 		prof_id: prof_id,
 		clssrm_id: clssrm_id,
 		size_lmt: size_lmt,
-		start_tm: new Date(start_tm),
-		end_tm: new Date(end_tm),
-		m: m,
+		start_tm: start_tm,
+		end_tm: end_tm
 		t: t,
 		w: w,
 		th: th,
