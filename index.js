@@ -391,74 +391,8 @@ function getAllCourses(college, department) {
 			var section = sections[j];
 			var professor = db.users.findSync({user_id: section.prof_id});
 			var classroom = db.classroom.findOneSync({clssrm_id: section.clssrm_id});
-			var start_tm = section.start_tm;
-			var start_tm_hour = new Date(start_tm).getHours();
-			var start_tm_minute = new Date(start_tm).getMinutes();
-			var end_tm = section.end_tm;
-			var end_tm_hour = new Date(end_tm).getHours();
-			var end_tm_minute = new Date(end_tm).getMinutes();
-			var dow = [];
-			var days = [];
-			var monday = getMonday(new Date());
-			if (section.m) {
-				dow.push('Monday');
-				console.log(monday);
-				var start = monday.setHours(start_tm_hour, start_tm_minute);
-				var end = monday.setHours(end_tm_hour, end_tm_minute);
-				var day = {
-					start: start,
-					end: end
-				};
-				days.push(day);
-			} if (section.t) {
-				dow.push('Tuesday');
-				var tuesday = monday.addDays(1);
-				var start = tuesday.setHours(start_tm_hour, start_tm_minute);
-				var end = tuesday.setHours(end_tm_hour, end_tm_minute);
-				var day = {
-					start: start,
-					end: end
-				};
-				days.push(day);
-			} if (section.w) {
-				dow.push('Wednesday');
-				var wednesday = monday.addDays(2);
-				console.log(wednesday);
-				var start = wednesday.setHours(start_tm_hour, start_tm_minute);
-				var end = wednesday.setHours(end_tm_hour, end_tm_minute);
-				var day = {
-					start: start,
-					end: end
-				};
-				days.push(day);
-			} if (section.th) {
-				dow.push('Thursday');
-				var thursday = monday.addDays(3);
-				var start = thursday.setHours(start_tm_hour, start_tm_minute);
-				var end = thursday.setHours(end_tm_hour, end_tm_minute);
-				var day = {
-					start: start,
-					end: end
-				};
-				days.push(day);
-			} if (section.f) {
-				dow.push('Friday');
-				var friday = monday.addDays(4);
-				console.log(friday);
-				var start = friday.setHours(start_tm_hour, start_tm_minute);
-				var end = friday.setHours(end_tm_hour, end_tm_minute);
-				var day = {
-					start: start,
-					end: end
-				};
-				days.push(day);
-			}
-			var obj = {
-				classroom: classroom,
-				professor: professor,
-				dow: dow,
-				days: days
-			};
+			
+			var obj = getData(course, section, classroom, professor, 1);
 			section.data = obj;
 			sections[j] = section;
 		}
@@ -466,6 +400,100 @@ function getAllCourses(college, department) {
 		courses[i] = course;
 	}
 	return courses;
+}
+
+function getData(course, section, classroom, professor, format) {
+	var start_tm = section.start_tm;
+	var start_tm_hour = moment(start_tm).hours();
+	var start_tm_minute =moment(start_tm).minutes();
+	var end_tm = section.end_tm;
+	var end_tm_hour = moment(end_tm).hours();
+	var end_tm_minute = moment(end_tm).minutes();
+	var dow = [];
+	var days = [];
+	if (section.m) {
+		dow.push('Monday');
+		var start = moment().isoWeekday(1);
+		start.hours(start_tm_hour);
+		start.minutes(start_tm_minute);
+		var end = moment().isoWeekday(1);
+		end.hours(end_tm_hour);
+		end.minutes(end_tm_minute);
+		var day = {
+			start: start.toDate(),
+			end: end.toDate()
+		};
+		days.push(day);
+	} if (section.t) {
+		dow.push('Tuesday');
+		var start = moment().isoWeekday(2);
+		start.hours(start_tm_hour);
+		start.minutes(start_tm_minute);
+		var end = moment().isoWeekday(2);
+		end.hours(end_tm_hour);
+		end.minutes(end_tm_minute);
+		var day = {
+			start: start.toDate(),
+			end: end.toDate()
+		};
+		days.push(day);
+	} if (section.w) {
+		dow.push('Wednesday');
+		var start = moment().isoWeekday(3);
+		start.hours(start_tm_hour);
+		start.minutes(start_tm_minute);
+		var end = moment().isoWeekday(3);
+		end.hours(end_tm_hour);
+		end.minutes(end_tm_minute);
+		var day = {
+			start: start.toDate(),
+			end: end.toDate()
+		};
+	} if (section.th) {
+		dow.push('Thursday');
+		var start = moment().isoWeekday(4);
+		start.hours(start_tm_hour);
+		start.minutes(start_tm_minute);
+		var end = moment().isoWeekday(4);
+		end.hours(end_tm_hour);
+		end.minutes(end_tm_minute);
+		var day = {
+			start: start.toDate(),
+			end: end.toDate()
+		};
+	} if (section.f) {
+		dow.push('Friday');
+		var start = moment().isoWeekday(5);
+		start.hours(start_tm_hour);
+		start.minutes(start_tm_minute);
+		var end = moment().isoWeekday(5);
+		end.hours(end_tm_hour);
+		end.minutes(end_tm_minute);
+		var day = {
+			start: start.toDate(),
+			end: end.toDate()
+		};
+		days.push(day);
+	}
+	if (format == 0) {
+		var obj = {
+			course: course,
+			section: section,
+			classroom: classroom,
+			professor: professor,
+			dow: dow,
+			days: days
+		};
+		return obj;
+	} else {
+		var obj = {
+			classroom: classroom,
+			professor: professor,
+			dow: dow,
+			days: days
+		};
+		return obj;
+	}
 }
 
 function getSchedule(user_id) {
@@ -476,73 +504,7 @@ function getSchedule(user_id) {
 		var section = db.section.findOneSync({sctn_id: scheduleRaw[i].sctn_id});
 		var classroom = db.classroom.findOneSync({clssrm_id: section.clssrm_id});
 		var professor = db.users.findOneSync({user_id: section.prof_id});
-		var start_tm = section.start_tm;
-		var start_tm_hour = new Date(start_tm).getHours();
-		var start_tm_minute = new Date(start_tm).getMinutes();
-		var end_tm = section.end_tm;
-		var end_tm_hour = new Date(end_tm).getHours();
-		var end_tm_minute = new Date(end_tm).getMinutes();
-		var dow = [];
-		var days = [];
-		var monday = getMonday(new Date());
-		if (section.m) {
-			dow.push('Monday');
-			var start = monday.setHours(start_tm_hour, start_tm_minute);
-			var end = monday.setHours(end_tm_hour, end_tm_minute);
-			var day = {
-				start: start,
-				end: end
-			};
-			days.push(day);
-		} if (section.t) {
-			dow.push('Tuesday');
-			var tuesday = monday.addDays(1);
-			var start = tuesday.setHours(start_tm_hour, start_tm_minute);
-			var end = tuesday.setHours(end_tm_hour, end_tm_minute);
-			var day = {
-				start: start,
-				end: end
-			};
-			days.push(day);
-		} if (section.w) {
-			dow.push('Wednesday');
-			var wednesday = monday.addDays(2);
-			var start = wednesday.setHours(start_tm_hour, start_tm_minute);
-			var end = wednesday.setHours(end_tm_hour, end_tm_minute);
-			var day = {
-				start: start,
-				end: end
-			};
-			days.push(day);
-		} if (section.th) {
-			dow.push('Thursday');
-			var thursday = monday.addDays(3);
-			var start = thursday.setHours(start_tm_hour, start_tm_minute);
-			var end = thursday.setHours(end_tm_hour, end_tm_minute);
-			var day = {
-				start: start,
-				end: end
-			};
-			days.push(day);
-		} if (section.f) {
-			dow.push('Friday');
-			var friday = monday.addDays(4);
-			var start = friday.setHours(start_tm_hour, start_tm_minute);
-			var end = friday.setHours(end_tm_hour, end_tm_minute);
-			var day = {
-				start: start,
-				end: end
-			};
-			days.push(day);
-		}
-		var obj = {
-			course: course,
-			section: section,
-			classroom: classroom,
-			professor: professor,
-			dow: dow,
-			days: days
-		};
+		var obj = getData(course, section, classroom, professor, 0);
 		schedule.push(obj);
 	}
 	return schedule;
