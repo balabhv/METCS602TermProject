@@ -1,1 +1,1 @@
-# METCS602TermProject
+When setting up the database, please run create_tables.sql (included) to setup the database tables and default values.
