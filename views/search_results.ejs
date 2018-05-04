@@ -28,21 +28,26 @@
 		<br>
 		<h1>Search Results</h1>
 		<br>
-		<% for (var i = 0 ; i < courses.length ; i++) { %>
-			<div class="list-group-item">
-				<h5><%= courses[i].course_desc %></h5>
-				<% for (var j = 0 ; j < courses[i].sections.length ; j++) { %>
-					<strong>Timings: </strong> <% var string = ''; for (var k = 0 ; k < courses[i].sections[j].data.dow.length ; k++) { string.concat(courses[i].sections[j].data.dow[k]) } %><%= string.substring(0, string.length - 1); %> <%= moment(courses[i].sections[j].data.start_tm).format('h:mm') %> - <%= moment(courses[i].sections[j].data.end_tm).format('h:mm A') %><br>
-					<strong>Location: </strong> <%= courses[i].sections[j].data.classroom.clssrm_desc %><br>
-					<strong>Professor: </strong> <%= courses[i].sections[j].data.professor.first_nm %> <%= courses[i].sections[j].data.professor.last_nm %>
-					<button type="button" class="closeButton btn btn-primary" aria-label="Add Course">
-						<input type="hidden" id="course_id" value=<%= courses[i].course_id %>>
-						<input type="hidden" id="section_id" value=<%= courses[i].sections[j].section_id %>>
-					  	<span>Add course</span>
-					</button>
-				<% } %>
-			</div>
+		<% if (courses.length > 0) { %>
+			<% for (var i = 0 ; i < courses.length ; i++) { %>
+				<div class="list-group-item">
+					<h5><%= courses[i].course_desc %></h5>
+					<% for (var j = 0 ; j < courses[i].sections.length ; j++) { %>
+						<strong>Timings: </strong> <% var string = ''; for (var k = 0 ; k < courses[i].sections[j].data.dow.length ; k++) { string.concat(courses[i].sections[j].data.dow[k]) } %><%= string.substring(0, string.length - 1); %> <%= moment(courses[i].sections[j].data.start_tm).format('h:mm') %> - <%= moment(courses[i].sections[j].data.end_tm).format('h:mm A') %><br>
+						<strong>Location: </strong> <%= courses[i].sections[j].data.classroom.clssrm_desc %><br>
+						<strong>Professor: </strong> <%= courses[i].sections[j].data.professor.first_nm %> <%= courses[i].sections[j].data.professor.last_nm %>
+						<button type="button" class="closeButton btn btn-primary" aria-label="Add Course">
+							<input type="hidden" id="course_id" value=<%= courses[i].course_id %>>
+							<input type="hidden" id="section_id" value=<%= courses[i].sections[j].section_id %>>
+						  	<span>Add course</span>
+						</button>
+					<% } %>
+				</div>
+			<% } %>
+		<% } else { %>
+			<h5>No results found. </h5>
 		<% } %>
+		
 		
 	</div>
 </body>
