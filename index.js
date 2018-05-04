@@ -147,7 +147,7 @@ app.post('/addUser', function(req, res) {
 	var scrn_nm = req.body.scrn_nm;
 	var pass_wd = req.body.pass_wd;
 	var email_id = req.body.email_id;
-	var type = req.body.type;
+	var type = req.body.type_id;
 	var user = {
 		first_nm: first_nm,
 		last_nm: last_nm,
