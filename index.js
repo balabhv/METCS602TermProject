@@ -348,7 +348,6 @@ app.get('/courses/:cllge/:dpt/search', function (req, res) {
 	var college = req.params.cllge;
 	var dept = req.params.dpt;
 	var courses = getAllCourses(college, dept);
-	console.log(courses);
 	res.render('search_results', {courses: courses});
 });
 
