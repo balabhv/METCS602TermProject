@@ -19,7 +19,6 @@ const runningLocally = (dbURL == null);
 var db = null;
 
 if (!runningLocally) {
-	console.log(dbURL);
 	db = massive.connectSync({connectionString: dbURL});
 	app.set('db', db);
 }
@@ -340,7 +339,7 @@ app.get('/college/:cllge/departments', function(req, res) {
 
 app.get('/college/:cllge/:dpt/getCourses', function(req, res) {
 	var college = req.params.cllge;
-	var depts = req.params.dpt;
+	var dept = req.params.dpt;
 	var courses = getCourseList(college, dept);
 	res.send({courses: courses});
 });
