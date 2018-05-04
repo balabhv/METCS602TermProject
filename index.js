@@ -246,12 +246,14 @@ app.post('/login', function(req, res) {
 					req.session.save();
 					res.send('Success');
 					console.log('success');
+					console.log(req.session.isLoggedIn);
 				} else {
 					req.session.isLoggedIn = true;
 					req.session.isAdmin = false;
 					req.session.save();
 					res.send('Success');
 					console.log('success');
+					console.log(req.session.isLoggedIn);
 				}
 			}
 		});
