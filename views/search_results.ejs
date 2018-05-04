@@ -39,7 +39,7 @@
 						<strong>Professor: </strong> <%= courses[i].sections[j].data.professor[0].first_nm %> <%= courses[i].sections[j].data.professor[0].last_nm %>
 						<button type="button" class="closeButton btn btn-primary" aria-label="Add Course">
 							<input type="hidden" id="course_id" value='<%= courses[i].course_id %>'>
-							<input type="hidden" id="section_id" value='<%= courses[i].sections[j].section_id %>'>
+							<input type="hidden" id="section_id" value='<%= courses[i].sections[j].sctn_id %>'>
 						  	<span>Add course</span>
 						</button>
 					<% } %>
