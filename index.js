@@ -137,7 +137,7 @@ app.get('/removeUser', function(req, res) {
 
 app.post('/addClassroom', function(req, res) {
 	var c_desc = req.body.description;
-	db.classroom.insertSync({clssrm_desc: c_desc});
+	db.classroom.insertSync({clssrm_desc: c_desc, size_lmt: 30});
 	res.send("Success");
 });
 
