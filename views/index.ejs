@@ -43,8 +43,8 @@
     			events: events
     		});
     	$(".closeButton").click(function(event) {
-    		var course_id = $(event.target).children('#course_id').val();
-			var section_id = $(event.target).children('#section_id').val();
+    		var course_id = $(event.target).attr('data-course-id');
+			var section_id = $(event.target).attr('data-section-id');
 			var body = {
 				course_id: course_id,
 				section_id: section_id
@@ -76,12 +76,10 @@
 				<% for (var i = 0 ; i < schedule.length ; i++) { %>
 				<div class="list-group-item">
 					<h5><%= schedule[i].course.course_desc %></h5>
-					<strong>Timings: </strong>  <%= moment(schedule[i].section.start_tm).format('h:mm') %> - <%= moment(schedule[i].section.end_tm).format('h:mm A') %><br>
+					<strong>Timings: </strong> <%= schedule[i].dowString %> <%= moment(schedule[i].days[i].start_tm).format('h:mm') %> - <%= moment(schedule[i].days[i].end_tm).format('h:mm A') %><br>
 					<strong>Location: </strong> <%= schedule[i].classroom.clssrm_desc %><br>
-					<strong>Professor: </strong> <%= schedule[i].professor.first_nm %> <%= schedule[i].professor.last_nm %>
-					<button type="button" class="closeButton btn btn-danger" aria-label="Close">
-						<input type="hidden" id="course_id" value='<%= schedule[i].course.course_id %>'>
-						<input type="hidden" id="section_id" value='<%= schedule[i].section.sctn_id %>'>
+					<strong>Professor: </strong> <%= schedule[i].professor[0].first_nm %> <%= schedule[i].professor[0].last_nm %>
+					<button type="button" class="closeButton btn btn-primary" aria-label="Drop Course" data-course-id='<%= schedule[i].course.course_id %>' data-section-id='<%= schedule[i].section.sctn_i %>'>
 					  	<span>Drop course</span>
 					</button>
 				</div>
