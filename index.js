@@ -7,6 +7,7 @@ var session = require('express-session');
 const path = require('path');
 const cookieSession = require('cookie-session');
 const moment = require('moment');
+var pgSession = require('connect-pg-simple')(session);
 
 var dbURL = process.env.DATABASE_URL;
 
@@ -53,7 +54,9 @@ if (runningLocally) {
 	}));
 } else {
 	app.use(session({
-		store: new (require('connect-pg-simple')(session))(),
+		store: new pgSession({
+			conString: dbURL
+		}),
 		secret: 'loggedIn',
 		resave: false,
 	  	saveUninitialized: true,
