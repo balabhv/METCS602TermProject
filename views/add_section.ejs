@@ -14,20 +14,20 @@
     angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
       $scope.submit = function() {
         var entry = {
-          cllge_id: college,
-          dept_id: department,
-          course_id: course,
-          prof_id: professor,
-          clssrm_id: classroom,
-          size_lmt: size_lmt,
-          wtlst_lmt: wtlst_lmt,
-          start_tm: start_tm,
-          end_tm: end_tm,
-          m: m,
-          t: t,
-          w: w,
-          th: th,
-          f: f
+          cllge_id: $scope.college,
+          dept_id: $scope.department,
+          course_id: $scope.course,
+          prof_id: $scope.professor,
+          clssrm_id: $scope.classroom,
+          size_lmt: $scope.size_lmt,
+          wtlst_lmt: $scope.wtlst_lmt,
+          start_tm: $scope.start_tm,
+          end_tm: $scope.end_tm,
+          m: $scope.m,
+          t: $scope.t,
+          w: $scope.w,
+          th: $scope.th,
+          f: $scope.f
         };
         $http.post(window.location.origin + '/addSection', entry).then(function(data) {
           window.location.href = window.location.origin + '/index';

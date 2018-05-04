@@ -14,11 +14,11 @@
     angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
       $scope.submit = function() {
         var entry = {
-          cllge_id: college,
-          dept_id: department,
-          course_nm: course_nm,
-          course_desc: course_desc,
-          num_credits: num_credits
+          cllge_id: $scope.college,
+          dept_id: $scope.department,
+          course_nm: $scope.course_nm,
+          course_desc: $scope.course_desc,
+          num_credits: $scope.num_credits
         };
         $http.post(window.location.origin + '/course/add/admin', entry).then(function(data) {
           window.location.href = window.location.origin + '/index';
