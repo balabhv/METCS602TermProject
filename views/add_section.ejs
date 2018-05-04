@@ -10,8 +10,12 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script data-require="angular-ui-bootstrap@*" data-semver="0.6.0" src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
+    <script src="https://rawgithub.com/randallmeeker/ps-input-time/master/ps-input-time.js"></script>
   <script type="text/javascript">
-    angular.module('addCourseApp', []).controller('AddCourseController', function($scope, $http) {
+    angular.module('addCourseApp', ['ui.bootstrap', 'ps.inputTime']).controller('AddCourseController', function($scope, $http) {
+      $scope.start_tm = new Date();
+      $scope.end_tm = new Date();
       $scope.submit = function() {
         console.log($scope.start_tm);
         var entry = {
@@ -116,11 +120,11 @@
         </div>
         <div class="form-group">
           <label for"startField">Start Time</label>
-          <input type="time" id="startField" ng-model="start_tm">
+          <input id="startField" ng-model="start_tm" ps-input-time>
         </div>
         <div class="form-group">
           <label for"endField">End Time</label>
-          <input type="time" id="endField" ng-model="end_tm">
+          <input id="endField" min="start_tm" ng-model="end_tm" ps-input-time>
         </div>
         <button id="submitButton" class="btn btn-primary" ng-click="submit()">Add Course</button>  
     </div>
