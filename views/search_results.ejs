@@ -12,6 +12,7 @@
 		$(".closeButton").click(function(event) {
 			var course_id = $(event.target).children('#course_id').val();
 			var section_id = $(event.target).children('#section_id').val();
+			console.log(course_id, section_id);
 			var body = {
 				course_id: course_id,
 				section_id: section_id
@@ -37,8 +38,8 @@
 						<strong>Location: </strong> <%= courses[i].sections[j].data.classroom.clssrm_desc %><br>
 						<strong>Professor: </strong> <%= courses[i].sections[j].data.professor[0].first_nm %> <%= courses[i].sections[j].data.professor[0].last_nm %>
 						<button type="button" class="closeButton btn btn-primary" aria-label="Add Course">
-							<input type="hidden" id="course_id" value=<%= courses[i].course_id %>>
-							<input type="hidden" id="section_id" value=<%= courses[i].sections[j].section_id %>>
+							<input type="hidden" id="course_id" value='<%= courses[i].course_id %>'>
+							<input type="hidden" id="section_id" value='<%= courses[i].sections[j].section_id %>'>
 						  	<span>Add course</span>
 						</button>
 					<% } %>
